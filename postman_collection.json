@@ -1,0 +1,172 @@
+{
+  "info": {
+    "name": "Student Management System API",
+    "description": "REST API për menaxhimin e studentëve",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "Create Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Arben\",\n  \"lastName\": \"Shala\",\n  \"email\": \"arben.shala@example.com\",\n  \"dateOfBirth\": \"2000-05-15\",\n  \"department\": \"Informatikë\",\n  \"studentId\": \"ST2024001\",\n  \"phoneNumber\": \"0691234567\",\n  \"address\": \"Prishtinë\",\n  \"status\": \"ACTIVE\",\n  \"enrollmentYear\": 2024\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students"]
+            }
+          }
+        },
+        {
+          "name": "Get Student by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Student by Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/email/arben.shala@example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "email", "arben.shala@example.com"]
+            }
+          }
+        },
+        {
+          "name": "Get Students by Department",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/department/Informatikë",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "department", "Informatikë"]
+            }
+          }
+        },
+        {
+          "name": "Get Students by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/status/ACTIVE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "status", "ACTIVE"]
+            }
+          }
+        },
+        {
+          "name": "Get Students by Year",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/year/2024",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "year", "2024"]
+            }
+          }
+        },
+        {
+          "name": "Update Student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "1"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Arben\",\n  \"lastName\": \"Shala Updated\",\n  \"email\": \"arben.new@example.com\",\n  \"phoneNumber\": \"0697777777\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Student",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Student Count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/count",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "count"]
+            }
+          }
+        },
+        {
+          "name": "Export to Excel",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/export/excel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "students", "export", "excel"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}

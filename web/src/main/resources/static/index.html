@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1400px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+        }
+        .btn-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            transition: transform 0.2s;
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        .badge-custom {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+        .form-container {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-container">
+            <div class="header">
+                <h1><i class="bi bi-mortarboard-fill"></i> Student Management System</h1>
+                <p>Sistema e Menaxhimit të Studentëve - University of Tirana</p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3 id="totalCount">0</h3>
+                        <p>Total Studentë</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                        <h3 id="activeCount">0</h3>
+                        <p>ACTIVE</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);">
+                        <h3 id="inactiveCount">0</h3>
+                        <p>INACTIVE</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <h3 id="graduatedCount">0</h3>
+                        <p>GRADUATED</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <button class="btn btn-custom btn-lg" onclick="showAddForm()">
+                        <i class="bi bi-person-plus-fill"></i> Shto Student të Ri
+                    </button>
+                    <button class="btn btn-success btn-lg" onclick="exportToExcel()">
+                        <i class="bi bi-file-earmark-excel-fill"></i> Eksporto Excel
+                    </button>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-info btn-lg" onclick="loadStudents()">
+                        <i class="bi bi-arrow-clockwise"></i> Rifresko
+                    </button>
+                </div>
+            </div>
+
+            <!-- Add/Edit Form (Hidden by default) -->
+            <div id="formContainer" class="form-container" style="display: none;">
+                <h4 id="formTitle"><i class="bi bi-person-plus"></i> Shto Student të Ri</h4>
+                <form id="studentForm" onsubmit="submitForm(event)">
+                    <input type="hidden" id="studentId">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Emri *</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mbiemri *</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Student ID *</label>
+                            <input type="text" class="form-control" id="studentId_field" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Data e Lindjes *</label>
+                            <input type="date" class="form-control" id="dateOfBirth" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Departamenti *</label>
+                            <select class="form-control" id="department" required>
+                                <option value="">Zgjidh...</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Software Engineering">Software Engineering</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Data Science">Data Science</option>
+                                <option value="Cybersecurity">Cybersecurity</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Viti i Regjistrimit *</label>
+                            <input type="number" class="form-control" id="enrollmentYear" min="2020" max="2030" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Telefon</label>
+                            <input type="text" class="form-control" id="phoneNumber" placeholder="+355 69 123 4567">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Status *</label>
+                            <select class="form-control" id="status" required>
+                                <option value="ACTIVE">ACTIVE</option>
+                                <option value="INACTIVE">INACTIVE</option>
+                                <option value="GRADUATED">GRADUATED</option>
+                                <option value="SUSPENDED">SUSPENDED</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Adresa</label>
+                            <input type="text" class="form-control" id="address" placeholder="Rruga, Qyteti">
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-custom btn-lg">
+                            <i class="bi bi-check-circle-fill"></i> Ruaj
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-lg" onclick="hideForm()">
+                            <i class="bi bi-x-circle-fill"></i> Anulo
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Students Table -->
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Emri</th>
+                            <th>Mbiemri</th>
+                            <th>Email</th>
+                            <th>Student ID</th>
+                            <th>Departamenti</th>
+                            <th>Status</th>
+                            <th>Viti</th>
+                            <th>Aksione</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTable">
+                        <tr>
+                            <td colspan="9" class="text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = 'http://localhost:8081/api/students';
+        let isEditMode = false;
+
+        // Load students on page load
+        window.onload = function() {
+            loadStudents();
+            loadStatistics();
+        };
+
+        // Load all students
+        async function loadStudents() {
+            try {
+                const response = await fetch(API_URL);
+                const students = await response.json();
+                displayStudents(students);
+            } catch (error) {
+                console.error('Error loading students:', error);
+                document.getElementById('studentsTable').innerHTML = 
+                    '<tr><td colspan="9" class="text-center text-danger">Gabim në ngarkimin e të dhënave!</td></tr>';
+            }
+        }
+
+        // Display students in table
+        function displayStudents(students) {
+            const tableBody = document.getElementById('studentsTable');
+            if (students.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Nuk ka studentë të regjistruar</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = students.map(student => `
+                <tr>
+                    <td>${student.id}</td>
+                    <td>${student.firstName}</td>
+                    <td>${student.lastName}</td>
+                    <td><small>${student.email}</small></td>
+                    <td><span class="badge bg-secondary">${student.studentId}</span></td>
+                    <td><small>${student.department}</small></td>
+                    <td><span class="badge ${getStatusBadgeClass(student.status)} badge-custom">${student.status}</span></td>
+                    <td>${student.enrollmentYear}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="editStudent(${student.id})" title="Edit">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteStudent(${student.id}, '${student.firstName} ${student.lastName}')" title="Delete">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Get badge class based on status
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'ACTIVE': return 'bg-success';
+                case 'INACTIVE': return 'bg-warning';
+                case 'GRADUATED': return 'bg-info';
+                case 'SUSPENDED': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch(API_URL);
+                const students = await response.json();
+                
+                document.getElementById('totalCount').textContent = students.length;
+                document.getElementById('activeCount').textContent = students.filter(s => s.status === 'ACTIVE').length;
+                document.getElementById('inactiveCount').textContent = students.filter(s => s.status === 'INACTIVE').length;
+                document.getElementById('graduatedCount').textContent = students.filter(s => s.status === 'GRADUATED').length;
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Show add form
+        function showAddForm() {
+            isEditMode = false;
+            document.getElementById('formTitle').innerHTML = '<i class="bi bi-person-plus"></i> Shto Student të Ri';
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentId').value = '';
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('enrollmentYear').value = new Date().getFullYear();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Hide form
+        function hideForm() {
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('studentForm').reset();
+        }
+
+        // Submit form (Create or Update)
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            const student = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                studentId: document.getElementById('studentId_field').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                department: document.getElementById('department').value,
+                enrollmentYear: parseInt(document.getElementById('enrollmentYear').value),
+                phoneNumber: document.getElementById('phoneNumber').value || null,
+                status: document.getElementById('status').value,
+                address: document.getElementById('address').value || null
+            };
+
+            try {
+                let response;
+                if (isEditMode) {
+                    const id = document.getElementById('studentId').value;
+                    response = await fetch(`${API_URL}/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(student)
+                    });
+                } else {
+                    response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(student)
+                    });
+                }
+
+                if (response.ok) {
+                    alert(isEditMode ? 'Studenti u përditësua me sukses!' : 'Studenti u krijua me sukses!');
+                    hideForm();
+                    loadStudents();
+                    loadStatistics();
+                } else {
+                    const error = await response.text();
+                    alert('Gabim: ' + error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Gabim në ruajtjen e të dhënave!');
+            }
+        }
+
+        // Edit student
+        async function editStudent(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                const student = await response.json();
+                
+                isEditMode = true;
+                document.getElementById('formTitle').innerHTML = '<i class="bi bi-pencil"></i> Përditëso Student';
+                document.getElementById('studentId').value = student.id;
+                document.getElementById('firstName').value = student.firstName;
+                document.getElementById('lastName').value = student.lastName;
+                document.getElementById('email').value = student.email;
+                document.getElementById('studentId_field').value = student.studentId;
+                document.getElementById('dateOfBirth').value = student.dateOfBirth;
+                document.getElementById('department').value = student.department;
+                document.getElementById('enrollmentYear').value = student.enrollmentYear;
+                document.getElementById('phoneNumber').value = student.phoneNumber || '';
+                document.getElementById('status').value = student.status;
+                document.getElementById('address').value = student.address || '';
+                
+                document.getElementById('formContainer').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error loading student:', error);
+                alert('Gabim në ngarkimin e studentit!');
+            }
+        }
+
+        // Delete student
+        async function deleteStudent(id, name) {
+            if (!confirm(`Je i sigurt që do të fshish studentin: ${name}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('Studenti u fshi me sukses!');
+                    loadStudents();
+                    loadStatistics();
+                } else {
+                    alert('Gabim në fshirjen e studentit!');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Gabim në fshirjen e studentit!');
+            }
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            window.location.href = `${API_URL}/export/excel`;
+        }
+    </script>
+</body>
+</html>
