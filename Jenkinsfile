@@ -80,7 +80,7 @@ pipeline {
             emailext(
                 subject: "Jenkins Build SUCCESS: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
                 body: "Build u krye me sukses.\n\nShiko detajet: ${env.BUILD_URL}",
-                to: 'team@example.com'
+                to: 'bajram.terziu@fti.edu.al'
             )
         }
         failure {
@@ -88,7 +88,7 @@ pipeline {
             emailext(
                 subject: "Jenkins Build FAILED: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
                 body: "Build dështoi.\n\nShiko detajet: ${env.BUILD_URL}",
-                to: 'team@example.com'
+                to: 'bajram.terziu@fti.edu.al'
             )
         }
         always {
