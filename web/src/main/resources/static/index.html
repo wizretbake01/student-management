@@ -139,11 +139,38 @@
                     <button class="btn btn-success btn-lg" onclick="exportToExcel()">
                         <i class="bi bi-file-earmark-excel-fill"></i> Eksporto Excel
                     </button>
+                    <button class="btn btn-warning btn-lg" onclick="toggleFilter()">
+                        <i class="bi bi-funnel-fill"></i> Filtro Studentët
+                    </button>
                 </div>
                 <div class="col-md-6 text-end">
                     <button class="btn btn-info btn-lg" onclick="loadStudents()">
                         <i class="bi bi-arrow-clockwise"></i> Rifresko
                     </button>
+                </div>
+            </div>
+
+            <!-- Filter Panel (Hidden by default) -->
+            <div id="filterPanel" class="form-container" style="display: none; margin-bottom: 15px;">
+                <h5><i class="bi bi-funnel"></i> Filtro Studentët</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="filterStatus" onchange="applyFilter()">
+                            <option value="">Të gjithë</option>
+                            <option value="ACTIVE">ACTIVE</option>
+                            <option value="INACTIVE">INACTIVE</option>
+                            <option value="GRADUATED">GRADUATED</option>
+                            <option value="SUSPENDED">SUSPENDED</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Kërko me emër / email</label>
+                        <input type="text" class="form-control" id="filterSearch" oninput="applyFilter()" placeholder="p.sh. Andi, andi@upt.al">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button class="btn btn-secondary" onclick="clearFilter()"><i class="bi bi-x-circle"></i> Pastro Filtrin</button>
+                    </div>
                 </div>
             </div>
 
@@ -257,6 +284,7 @@
     <script>
         const API_URL = 'http://localhost:8081/api/students';
         let isEditMode = false;
+        let allStudents = [];
 
         // Load students on page load
         window.onload = function() {
@@ -269,6 +297,7 @@
             try {
                 const response = await fetch(API_URL);
                 const students = await response.json();
+                allStudents = students;
                 displayStudents(students);
             } catch (error) {
                 console.error('Error loading students:', error);
@@ -305,6 +334,32 @@
                     </td>
                 </tr>
             `).join('');
+        }
+
+        // Filter functions
+        function toggleFilter() {
+            const panel = document.getElementById('filterPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function applyFilter() {
+            const status = document.getElementById('filterStatus').value.toLowerCase();
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            const filtered = allStudents.filter(s => {
+                const matchStatus = !status || s.status.toLowerCase() === status;
+                const matchSearch = !search ||
+                    s.firstName.toLowerCase().includes(search) ||
+                    s.lastName.toLowerCase().includes(search) ||
+                    s.email.toLowerCase().includes(search);
+                return matchStatus && matchSearch;
+            });
+            displayStudents(filtered);
+        }
+
+        function clearFilter() {
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterSearch').value = '';
+            displayStudents(allStudents);
         }
 
         // Get badge class based on status
